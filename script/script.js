@@ -1,4 +1,11 @@
 /* global $ */
+
+var selectors = {
+    filterButton: '#filter-button',
+    reload: '#reload',
+    searchFilter: '#search-filter'
+};
+
 function get_guids() {
     if (!location.hash) {
         return JSON.parse(localStorage.getItem("guids") || "[]");
@@ -333,7 +340,7 @@ function itemfilter() {
     }
     var levimin = ($("#levimin").val() == "") ? 0 : parseInt($("#levimin").val());
     var levimax = ($("#levimax").val() == "") ? 80 : parseInt($("#levimax").val());
-    var filtervalue = $("#filter").val().toLowerCase();
+    var filtervalue = $(selectors.searchFilter).val().toLowerCase();
     var toshow = [];
     $(".rarity:checked,.type:checked").each(function() {
         toshow.push($(this).next("label").attr("class"));
@@ -355,7 +362,7 @@ function itemfilter() {
 function reload() {
     buildnum();
     $("#content").empty();
-    $("#filter").val("");
+    $(selectors.searchFilter).val("");
     $(".levfilter").val("");
     $("input:checkbox").prop("checked", true);
     $.each(guids, function(j, key) {
@@ -371,11 +378,11 @@ function reload() {
             get_content(key, account);
         });
     });
-    document.querySelector('#filter').focus();
+    document.querySelector(selectors.searchFilter).focus();
 }
 
 function initEvents() {
-    $("#filter").keyup(itemfilter);
+    $(selectors.searchFilter).keyup(itemfilter);
     $(".rarity,.type").change(itemfilter);
     $(".gender,.race,.prof").change(charfilter);
     $("#items .levfilter").keyup(itemfilter);
@@ -400,11 +407,11 @@ function initEvents() {
         $("#" + tab_id).addClass('current');
     });
 
-    $("#filterbutton").click(function() {
+    $(selectors.filterButton).click(function() {
         $("#filterdiv").toggle();
     });
 
-    $("#get").click(reload);
+    $(selectors.reload).click(reload);
 }
 
 //jQuery.ajaxSetup({async:false});

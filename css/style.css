@@ -1,4 +1,23 @@
-* {
+.mdl-layout__content {
+    overflow-x: auto;
+}
+
+.mdl-layout__drawer {
+    background-color: rgb(96,125,139);
+}
+.mdl-layout__drawer .mdl-layout-title {
+    color: white;
+}
+.mdl-layout__drawer .mdl-navigation .mdl-navigation__link {
+    color: black;
+}
+.mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover {
+    background-color: rgba(158,158,158,.2);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+#filterdiv,
+#content {
     text-align: center;
 }
 body {
@@ -6,20 +25,12 @@ body {
     color: #CACACA;
 }
 #header {
-    position: fixed;
-    left: 0;
-    top: 0;
     height: 28px;
     width: 100%;
     z-index: 10;
     background-color: #333;
     box-shadow: 0 1.5px 3px rgba(0, 0, 0, .25);
     padding-top: 4px;
-}
-input[type=text] {
-    background-color: #CCC;
-    border: none;
-    padding: 2px 4px;
 }
 input[type=button] {
     cursor: pointer;
@@ -35,22 +46,12 @@ input[type=button] {
 #get {
     height: 21px;
 }
-#filterContainer,
-#filterbutton {
-    height: 24px;
-    width: 24px;
-}
-#filterContainer {
-    float: right;
-}
-#filterbutton {
-    cursor: pointer;
-}
 #filterdiv {
     display: none;
     position: absolute;
+    min-width: 175px;
     right: 0;
-    top: 32px;
+    top: 50px;
     background-color: #333;
     border-radius: 8px;
     box-shadow: 0 1.5px 4px rgba(0, 0, 0, .24), 0 1.5px 6px rgba(0, 0, 0, .12);
@@ -92,7 +93,7 @@ label {
     color: #888;
 }
 :not(.rarity) + label {
-    width: 60%;
+    /*width: 60%;*/
 }
 .levfilter {
     width: 30px;
@@ -259,4 +260,5 @@ h6 {
     box-shadow: -1.5px -1.5px 3px rgba(0, 0, 0, .25);
     padding: 0 8px;
     text-align: right;
+    z-index: 2;
 }
