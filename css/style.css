@@ -1,0 +1,262 @@
+* {
+    text-align: center;
+}
+body {
+    background-color: #555;
+    color: #CACACA;
+}
+#header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 28px;
+    width: 100%;
+    z-index: 10;
+    background-color: #333;
+    box-shadow: 0 1.5px 3px rgba(0, 0, 0, .25);
+    padding-top: 4px;
+}
+input[type=text] {
+    background-color: #CCC;
+    border: none;
+    padding: 2px 4px;
+}
+input[type=button] {
+    cursor: pointer;
+    background-color: #8E8E8E;
+    border: none;
+    border-radius: 0 9px 9px 0;
+    padding: 1px 3px;
+}
+#filter {
+    height: 17px;
+    border-radius: 9px 0 0 9px;
+}
+#get {
+    height: 21px;
+}
+#filterContainer,
+#filterbutton {
+    height: 24px;
+    width: 24px;
+}
+#filterContainer {
+    float: right;
+}
+#filterbutton {
+    cursor: pointer;
+}
+#filterdiv {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 32px;
+    background-color: #333;
+    border-radius: 8px;
+    box-shadow: 0 1.5px 4px rgba(0, 0, 0, .24), 0 1.5px 6px rgba(0, 0, 0, .12);
+}
+ul.tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.tabs li {
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px;
+    color: #888;
+}
+ul.tabs li.current {
+    color: #FFF;
+}
+.tab-content {
+    display: none;
+    padding: 10px;
+}
+.tab-content.current {
+    display: inherit;
+}
+.filters {
+    position: absolute;
+    right: 0;
+}
+label {
+    float: left;
+    background-repeat: no-repeat;
+    text-align: left;
+}
+.icon {
+    margin-bottom: -4px;
+}
+.type + label {
+    color: #888;
+}
+:not(.rarity) + label {
+    width: 60%;
+}
+.levfilter {
+    width: 30px;
+    border-radius: 9px;
+}
+#content {
+    display: flex;
+    height: 100%;
+}
+.account {
+    border-right: 1px dotted #888;
+}
+h2 {
+    margin-bottom: 0;
+}
+h6 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.characters {
+    display: flex;
+}
+.character {
+    position: relative;
+    min-width: 210px;
+    width: 210px;
+}
+.charbg {
+    position: absolute;
+    left: 0;
+    top: -45px;
+    height: auto;
+    width: 100%;
+    z-index: -1;
+    opacity: 0.2;
+}
+.spec img {
+    margin: 0 4px -4px 0;
+}
+.stuff,
+.bag,
+.banktabs,
+.matstabs {
+    margin: 0 auto 10px auto;
+}
+.stuff {
+    box-shadow: 0px 20px 2px -19px #CCC;
+}
+.banktabs,
+.matstabs {
+    width: 360px;
+}
+.item {
+    display: inline-block;
+    position: relative;
+    height: 32px;
+    width: 32px;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    border-width: 2px 0 0 2px;
+    overflow: visible;
+    margin: 1px 1px 0 1px;
+    padding: 0;
+}
+.item img {
+    height: 32px;
+    width: 32px;
+}
+.item:hover img {
+    top: -25%;
+}
+.r_Empty {
+    border-color: #000;
+    opacity: .2;
+}
+.r_Basic {
+    border-color: #FFF;
+}
+.r_Junk {
+    border-color: #AAA;
+}
+.r_Fine {
+    border-color: #62A4DA;
+}
+.r_Masterwork {
+    border-color: #1A9306;
+}
+.r_Rare {
+    border-color: #FCD00B;
+}
+.r_Exotic {
+    border-color: #FFA405;
+}
+.r_Ascended {
+    border-color: #FB3E8D;
+}
+.r_Legendary {
+    border-color: #4C139D;
+}
+.r_Unknown {
+    border-color: red;
+}
+.Empty {
+    color: black;
+}
+.Junk {
+    color: #AAA;
+}
+.Basic {
+    color: #FFF;
+}
+.Fine {
+    color: #62A4DA;
+}
+.Masterwork {
+    color: #1A9306;
+}
+.Rare {
+    color: #FCD00B;
+}
+.Exotic {
+    color: #FFA405;
+}
+.Ascended {
+    color: #FB3E8D;
+}
+.Legendary {
+    color: #4C139D;
+}
+.Unknown {
+    color: red;
+}
+.count {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1px;
+    color: #fff;
+    font-size: 85%;
+    text-align: right;
+    text-shadow: 1px 1px black;
+}
+.item:hover .count, .item:hover img {
+    position: absolute;
+    width: 150%;
+    left: -25%;
+    z-index: 1;
+}
+.item:hover img {
+    height: 150%;
+}
+.item:hover .count {
+    background-color: rgba(0, 0, 0, 0.7);
+    bottom: -25%;
+    width: 150%;
+}
+#footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    background-color: #333;
+    box-shadow: -1.5px -1.5px 3px rgba(0, 0, 0, .25);
+    padding: 0 8px;
+    text-align: right;
+}
