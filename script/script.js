@@ -313,18 +313,16 @@ function charfilter() {
     var levcmax = ($("#levcmax").val() == "") ? 80 : parseInt($("#levcmax").val());
     var tohide = [];
     $("input:checkbox:not(:checked,.rarity,.checkAll)").each(function() {
-        tohide.push($(this).next("label").attr("class"));
+        tohide.push($(this).closest("label").attr("class").replace('background-icon', '').trim());
     });
-    $(".character").each(function() {
-        var charlev = parseInt($(this).attr("level"));
-        var charattr = $(this).listAttributes();
-        if (
-            levcmin > charlev ||
-            charlev > levcmax ||
-            charattr.some(function(x) {
-                return tohide.indexOf(x) > -1;
-            })
-            ) {
+    $(".character").each(function(index, character) {
+        var $character = $(character);
+        var charlev = parseInt($character.attr("level"));
+        var charattr = $character.listAttributes();
+        var hasForbiddenAttr = charattr.some(function(x) {
+            return tohide.indexOf($character.attr(x)) !== -1;
+        }.bind(this));
+        if (levcmin > charlev || charlev > levcmax || hasForbiddenAttr) {
             $(this).hide();
         } else {
             $(this).show();
@@ -332,29 +330,36 @@ function charfilter() {
     });
 }
 
-function itemfilter() {
-    if ($(".rarity:checked").length < $(".rarity").length) {
-        $("#chieur").prop("checked", 0);
-    } else {
-        $("#chieur").prop("checked", 1);
+function filterEmptySlotIfNeeded(targetElement) {
+    if ($(targetElement).closest("label").hasClass('Empty')) {
+        return;
     }
+    var $elem = $('#items .type .Empty input');
+    var checkboxesFilter = $('#items .filter-item label:not(.Empty) input:checkbox');
+    var numberChecked = checkboxesFilter.filter(':checked').length;
+    var totalNumber = checkboxesFilter.length;
+    $elem.prop("checked", numberChecked === totalNumber);
+}
+
+function itemfilter() {
+    filterEmptySlotIfNeeded(this);
     var levimin = ($("#levimin").val() == "") ? 0 : parseInt($("#levimin").val());
     var levimax = ($("#levimax").val() == "") ? 80 : parseInt($("#levimax").val());
     var filtervalue = $(selectors.searchFilter).val().toLowerCase();
     var toshow = [];
-    $(".rarity:checked,.type:checked").each(function() {
-        toshow.push($(this).next("label").attr("class"));
+    $("#items .filter-item :checked").each(function() {
+        toshow.push($(this).closest("label").attr("class"));
     });
-    $(".item").each(function() {
-        var ei = $(this);
-        var name = ei.data("name");
-        var rari = ei.attr("class").split(" ")[1].slice(2);
-        var type = ei.attr("type");
-        var itemlev = parseInt(ei.attr("level"));
+    $(".item").each(function(index, item) {
+        var $item = $(item);
+        var name = $item.data("name");
+        var rari = $item.attr("class").split(" ")[1].slice(2);
+        var type = $item.attr("type");
+        var itemlev = parseInt($item.attr("level"));
         if (name.indexOf(filtervalue) > -1 && toshow.indexOf(rari) > -1 && toshow.indexOf(type) > -1 && levimin <= itemlev && itemlev <= levimax) {
-            ei.show();
+            $item.show();
         } else {
-            ei.hide();
+            $item.hide();
         }
     });
 }
@@ -383,14 +388,16 @@ function reload() {
 
 function initEvents() {
     $(selectors.searchFilter).keyup(itemfilter);
-    $(".rarity,.type").change(itemfilter);
+    $("#items input").change(itemfilter);
     $(".gender,.race,.prof").change(charfilter);
     $("#items .levfilter").keyup(itemfilter);
     $("#chars .levfilter").keyup(charfilter);
     $(".checkAll").change(function() {
-        $("input:checkbox." + $(this).attr("ctrl")).prop("checked", $(this).prop("checked"));
-        var filt = $(this).attr("ctrl");
-        if (filt == "rarity" || filt == "type") {
+        var $element = $(this);
+        var $group = $element.closest('.filter-group');
+        var checked = $element.prop("checked");
+        $group.find('input:checkbox').prop('checked', checked);
+        if ($group.closest('#items').length) {
             itemfilter();
         } else {
             charfilter();
@@ -414,14 +421,9 @@ function initEvents() {
     $(selectors.reload).click(reload);
 }
 
-//jQuery.ajaxSetup({async:false});
 $(window).load(function() {
     buildnum();
-    $("label").each(function() {
-        if (icons[$(this).attr("class")]) {
-            $(this).prepend($("<img/>").attr({ src: icons[$(this).attr("class")], class: "icon", alt: $(this).attr("class"), title: $(this).attr("class") }));
-        };
-    });
+    $('#filterdiv input:checkbox').click();
     guids = get_guids();
     initEvents();
 });

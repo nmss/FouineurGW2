@@ -1,3 +1,4 @@
+/* Adaptation mdl */
 .mdl-layout__content {
     overflow-x: auto;
 }
@@ -16,7 +17,13 @@
     box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
 }
 
-#filterdiv,
+/* extension mdl */
+#filterdiv {
+    vertical-align: middle;
+}
+
+/* Style de la page */
+
 #content {
     text-align: center;
 }
@@ -56,38 +63,39 @@ input[type=button] {
     border-radius: 8px;
     box-shadow: 0 1.5px 4px rgba(0, 0, 0, .24), 0 1.5px 6px rgba(0, 0, 0, .12);
 }
-ul.tabs {
+#filterdiv .tabs {
+    text-align: center;
     list-style: none;
     margin: 0;
     padding: 0;
 }
-ul.tabs li {
+#filterdiv .tabs li {
     cursor: pointer;
     display: inline-block;
     padding: 10px;
     color: #888;
 }
-ul.tabs li.current {
+#filterdiv .tabs li.current {
     color: #FFF;
 }
-.tab-content {
+#filterdiv .tab-content {
     display: none;
     padding: 10px;
 }
-.tab-content.current {
+#filterdiv .tab-content.current {
     display: inherit;
 }
-.filters {
-    position: absolute;
-    right: 0;
+#filterdiv .filter-group {
+    margin: 10px 0;
 }
-label {
-    float: left;
-    background-repeat: no-repeat;
-    text-align: left;
+#filterdiv .filter-header {
+    text-align: center;
 }
-.icon {
-    margin-bottom: -4px;
+#filterdiv .filter-item label {
+    display: block;
+}
+#filterdiv input[type=checkbox] {
+    float: right;
 }
 .type + label {
     color: #888;
@@ -99,6 +107,32 @@ label {
     width: 30px;
     border-radius: 9px;
 }
+
+.background-icon {
+    padding-left: 24px;
+    background-repeat: no-repeat;
+}
+.background-icon.Female,
+.background-icon.Male {
+    background-position: 4px 0;
+}
+.background-icon.Female { background-image: url(https://cdn3.iconfinder.com/data/icons/fatcow/16/female.png); }
+.background-icon.Male { background-image: url(https://cdn3.iconfinder.com/data/icons/fatcow/16x16_0560/male.png); }
+.background-icon.Asura { background-image: url(https://wiki.guildwars2.com/images/1/1f/Asura_tango_icon_20px.png); }
+.background-icon.Charr { background-image: url(https://wiki.guildwars2.com/images/f/fa/Charr_tango_icon_20px.png); }
+.background-icon.Human { background-image: url(https://wiki.guildwars2.com/images/e/e1/Human_tango_icon_20px.png); }
+.background-icon.Norn { background-image: url(https://wiki.guildwars2.com/images/3/3d/Norn_tango_icon_20px.png); }
+.background-icon.Sylvari { background-image: url(https://wiki.guildwars2.com/images/2/29/Sylvari_tango_icon_20px.png); }
+.background-icon.Elementalist { background-image: url(https://wiki.guildwars2.com/images/a/aa/Elementalist_tango_icon_20px.png); }
+.background-icon.Engineer { background-image: url(https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png); }
+.background-icon.Guardian { background-image: url(https://wiki.guildwars2.com/images/8/8c/Guardian_tango_icon_20px.png); }
+.background-icon.Mesmer { background-image: url(https://wiki.guildwars2.com/images/6/60/Mesmer_tango_icon_20px.png); }
+.background-icon.Necromancer { background-image: url(https://wiki.guildwars2.com/images/4/43/Necromancer_tango_icon_20px.png); }
+.background-icon.Ranger { background-image: url(https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png); }
+.background-icon.Revenant { background-image: url(https://wiki.guildwars2.com/images/b/b5/Revenant_tango_icon_20px.png); }
+.background-icon.Thief { background-image: url(https://wiki.guildwars2.com/images/7/7a/Thief_tango_icon_20px.png); }
+.background-icon.Warrior { background-image: url(https://wiki.guildwars2.com/images/4/43/Warrior_tango_icon_20px.png); }
+
 #content {
     display: flex;
     height: 100%;
@@ -131,13 +165,14 @@ h6 {
     opacity: 0.2;
 }
 .spec img {
-    margin: 0 4px -4px 0;
+    margin: 0 2px;
 }
 .stuff,
 .bag,
 .banktabs,
 .matstabs {
     margin: 0 auto 10px auto;
+    line-height: 0;
 }
 .stuff {
     box-shadow: 0px 20px 2px -19px #CCC;
@@ -157,8 +192,12 @@ h6 {
     overflow: visible;
     margin: 1px 1px 0 1px;
     padding: 0;
+    line-height: initial;
 }
 .item img {
+    position: absolute;
+    left: 0;
+    top: 0;
     height: 32px;
     width: 32px;
 }
@@ -250,7 +289,6 @@ h6 {
 .item:hover .count {
     background-color: rgba(0, 0, 0, 0.7);
     bottom: -25%;
-    width: 150%;
 }
 #footer {
     position: fixed;
