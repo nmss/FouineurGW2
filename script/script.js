@@ -6,6 +6,10 @@ var selectors = {
     searchFilter: '#search-filter'
 };
 
+var elements = {
+    accounts: {}
+};
+
 function get_guids() {
     if (!location.hash) {
         return JSON.parse(localStorage.getItem("guids") || "[]");
@@ -227,7 +231,7 @@ function get_mats_data(key, account) {
         while (matsdata.length) {
             get_bag(matsdata.splice(0, 150), itemsdiv);
         }
-        $("." + account).append(chardiv);
+        elements.accounts[account].append(chardiv);
     });
 }
 
@@ -241,14 +245,14 @@ function get_bank_data(key, account) {
         while (bankdata.length) {
             get_bag(bankdata.splice(0, 150), itemsdiv);
         }
-        $("." + account).append(chardiv);
+        elements.accounts[account].append(chardiv);
     });
 }
 
 function get_char_data(character, key, account) {
     var curl = get_url("characters/" + character, key);
     var chardiv = $("<div/>").addClass("character");
-    $("." + account + " .characters").append(chardiv);
+    elements.accounts[account].find(".characters").append(chardiv);
     $.getJSON(curl, function(cdata) {
         var adde = (cdata.gender == "Male") ? "" : "e";
         var discis = "";
@@ -296,7 +300,7 @@ function get_content(key, account) {
     var url = get_url("characters", key);
     $.getJSON(url, function(data) {
         var charsdiv = $("<div/>").addClass("characters");
-        $("." + account).append(charsdiv);
+        elements.accounts[account].append(charsdiv);
         $.each(data, function(i, charname) {
             get_char_data(charname, key, account);
         });
@@ -374,15 +378,17 @@ function reload() {
     $(selectors.searchFilter).val("");
     $(".levfilter").val("");
     $("input:checkbox").prop("checked", true);
+    elements.accounts = {};
     $.each(guids, function(j, key) {
         var url = get_url("account", key);
         $.getJSON(url, function(data) {
-            var account = data.name.replace(".", "·");
-            $("#content").append($("<div/>").addClass(account + " account"));
-            $("." + account).append($("<h2/>").text(account).attr("title", "Créé le " + formatDate(data.created)));
+            var account = data.name.replace(".", "   ·   ");
+            var $account = elements.accounts[account] = $("<div/>").addClass("account");
+            $("#content").append($account);
+            $account.append($("<h2/>").text(account).attr("title", "Créé le " + formatDate(data.created)));
             var wurl = get_url("worlds/" + data.world, key);
             $.getJSON(wurl, function(wdata) {
-                $("." + account).append($("<h6/>").text(wdata.name));
+                $account.append($("<h6/>").text(wdata.name));
             });
             get_content(key, account);
         });
