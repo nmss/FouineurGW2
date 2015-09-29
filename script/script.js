@@ -158,7 +158,7 @@ function update_bag(bag, target) {
         else {
             create_empty(null, target);
         }
-    };
+    }
 }
 
 function loadItems(ids) {
@@ -211,7 +211,7 @@ function get_bag(bag, target) {
                 skinids.push(bagitem.skin);
             }
         }
-    };
+    }
     Promise.resolve()
         .then(loadSkins.bind(this, skinids))
         .then(loadItems.bind(this, itemids))
@@ -272,21 +272,22 @@ function get_char_data(character, key, account) {
             get_bag(bag.inventory, itemsdiv);
         });
         var guildId = cdata.guild;
-        if (guildId) {
-            function insertGuildIntoPage(guildData) {
-                chardiv.append($("<img/>").addClass("charbg").attr("src", "http://guilds.gw2w2w.com/" + guildId + ".svg"));
-                var putag = chardiv.children("span.title");
-                putag.append(" [" + guildData.tag + "]");
-            }
-            if (guilds.isStale(guildId)) {
-                var gurl = "https://api.guildwars2.com/v1/guild_details?guild_id=" + guildId;
-                $.getJSON(gurl, function(gdata) {
-                    guilds.set(guildId, gdata);
-                    insertGuildIntoPage(gdata);
-                });
-            } else {
-                insertGuildIntoPage(guilds.cache[guildId]);
-            }
+        if (!guildId) {
+            return;
+        }
+        function insertGuildIntoPage(guildData) {
+            chardiv.append($("<img/>").addClass("charbg").attr("src", "http://guilds.gw2w2w.com/" + guildId + ".svg"));
+            var putag = chardiv.children("span.title");
+            putag.append(" [" + guildData.tag + "]");
+        }
+        if (guilds.isStale(guildId)) {
+            var gurl = "https://api.guildwars2.com/v1/guild_details?guild_id=" + guildId;
+            $.getJSON(gurl, function(gdata) {
+                guilds.set(guildId, gdata);
+                insertGuildIntoPage(gdata);
+            });
+        } else {
+            insertGuildIntoPage(guilds.cache[guildId]);
         }
     });
 }
@@ -317,8 +318,8 @@ function buildnum() {
 }
 
 function charfilter() {
-    var levcmin = ($("#levcmin").val() == "") ? 1 : parseInt($("#levcmin").val());
-    var levcmax = ($("#levcmax").val() == "") ? 80 : parseInt($("#levcmax").val());
+    var levcmin = ($("#levcmin").val() === "") ? 1 : parseInt($("#levcmin").val());
+    var levcmax = ($("#levcmax").val() === "") ? 80 : parseInt($("#levcmax").val());
     var tohide = [];
     $("input:checkbox:not(:checked,.rarity,.checkAll)").each(function() {
         tohide.push($(this).closest("label").attr("class").replace('background-icon', '').trim());
@@ -351,8 +352,8 @@ function filterEmptySlotIfNeeded(targetElement) {
 
 function itemfilter() {
     filterEmptySlotIfNeeded(this);
-    var levimin = ($("#levimin").val() == "") ? 0 : parseInt($("#levimin").val());
-    var levimax = ($("#levimax").val() == "") ? 80 : parseInt($("#levimax").val());
+    var levimin = ($("#levimin").val() === "") ? 0 : parseInt($("#levimin").val());
+    var levimax = ($("#levimax").val() === "") ? 80 : parseInt($("#levimax").val());
     var filtervalue = $(selectors.searchFilter).val().toLowerCase();
     var toshow = [];
     $("#items .filter-item :checked").each(function() {
