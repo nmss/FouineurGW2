@@ -12,7 +12,11 @@ function get_guids() {
     }
     var guids = location.hash.slice(1).split(",");
     localStorage.setItem("guids", JSON.stringify(guids));
-    history.pushState(undefined, document.title, location.href.slice(0, location.href.indexOf('#')));
+    try {
+        history.replaceState(undefined, document.title, location.pathname);
+    } catch (e) {
+        location.href = location.pathname;
+    }
     return guids;
 }
 var guids;
