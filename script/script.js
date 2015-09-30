@@ -416,7 +416,7 @@ function initEvents() {
     });
 
     $('ul.tabs li').click(function() {
-        var tab_id = $(this).attr('toshow');
+        var tab_id = $(this).data('content');
 
         $('ul.tabs li').removeClass('current');
         $('.tab-content').removeClass('current');
