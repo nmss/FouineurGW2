@@ -6,13 +6,21 @@ var selectors = {
     searchFilter: '#search-filter'
 };
 
+var elements = {
+    accounts: {}
+};
+
 function get_guids() {
     if (!location.hash) {
         return JSON.parse(localStorage.getItem("guids") || "[]");
     }
     var guids = location.hash.slice(1).split(",");
     localStorage.setItem("guids", JSON.stringify(guids));
-    history.pushState(undefined, document.title, location.href.slice(0, location.href.indexOf('#')));
+    try {
+        history.replaceState(undefined, document.title, location.pathname);
+    } catch (e) {
+        location.href = location.pathname;
+    }
     return guids;
 }
 var guids;
@@ -150,7 +158,7 @@ function update_bag(bag, target) {
         else {
             create_empty(null, target);
         }
-    };
+    }
 }
 
 function loadItems(ids) {
@@ -203,7 +211,7 @@ function get_bag(bag, target) {
                 skinids.push(bagitem.skin);
             }
         }
-    };
+    }
     Promise.resolve()
         .then(loadSkins.bind(this, skinids))
         .then(loadItems.bind(this, itemids))
@@ -223,7 +231,7 @@ function get_mats_data(key, account) {
         while (matsdata.length) {
             get_bag(matsdata.splice(0, 150), itemsdiv);
         }
-        $("." + account).append(chardiv);
+        elements.accounts[account].append(chardiv);
     });
 }
 
@@ -237,14 +245,14 @@ function get_bank_data(key, account) {
         while (bankdata.length) {
             get_bag(bankdata.splice(0, 150), itemsdiv);
         }
-        $("." + account).append(chardiv);
+        elements.accounts[account].append(chardiv);
     });
 }
 
 function get_char_data(character, key, account) {
     var curl = get_url("characters/" + character, key);
     var chardiv = $("<div/>").addClass("character");
-    $("." + account + " .characters").append(chardiv);
+    elements.accounts[account].find(".characters").append(chardiv);
     $.getJSON(curl, function(cdata) {
         var adde = (cdata.gender == "Male") ? "" : "e";
         var discis = "";
@@ -264,21 +272,22 @@ function get_char_data(character, key, account) {
             get_bag(bag.inventory, itemsdiv);
         });
         var guildId = cdata.guild;
-        if (guildId) {
-            function insertGuildIntoPage(guildData) {
-                chardiv.append($("<img/>").addClass("charbg").attr("src", "http://guilds.gw2w2w.com/" + guildId + ".svg"));
-                var putag = chardiv.children("span.title");
-                putag.append(" [" + guildData.tag + "]");
-            }
-            if (guilds.isStale(guildId)) {
-                var gurl = "https://api.guildwars2.com/v1/guild_details?guild_id=" + guildId;
-                $.getJSON(gurl, function(gdata) {
-                    guilds.set(guildId, gdata);
-                    insertGuildIntoPage(gdata);
-                });
-            } else {
-                insertGuildIntoPage(guilds.cache[guildId]);
-            }
+        if (!guildId) {
+            return;
+        }
+        function insertGuildIntoPage(guildData) {
+            chardiv.append($("<img/>").addClass("charbg").attr("src", "http://guilds.gw2w2w.com/" + guildId + ".svg"));
+            var putag = chardiv.children("span.title");
+            putag.append(" [" + guildData.tag + "]");
+        }
+        if (guilds.isStale(guildId)) {
+            var gurl = "https://api.guildwars2.com/v1/guild_details?guild_id=" + guildId;
+            $.getJSON(gurl, function(gdata) {
+                guilds.set(guildId, gdata);
+                insertGuildIntoPage(gdata);
+            });
+        } else {
+            insertGuildIntoPage(guilds.cache[guildId]);
         }
     });
 }
@@ -292,7 +301,7 @@ function get_content(key, account) {
     var url = get_url("characters", key);
     $.getJSON(url, function(data) {
         var charsdiv = $("<div/>").addClass("characters");
-        $("." + account).append(charsdiv);
+        elements.accounts[account].append(charsdiv);
         $.each(data, function(i, charname) {
             get_char_data(charname, key, account);
         });
@@ -309,8 +318,8 @@ function buildnum() {
 }
 
 function charfilter() {
-    var levcmin = ($("#levcmin").val() == "") ? 1 : parseInt($("#levcmin").val());
-    var levcmax = ($("#levcmax").val() == "") ? 80 : parseInt($("#levcmax").val());
+    var levcmin = ($("#levcmin").val() === "") ? 1 : parseInt($("#levcmin").val());
+    var levcmax = ($("#levcmax").val() === "") ? 80 : parseInt($("#levcmax").val());
     var tohide = [];
     $("input:checkbox:not(:checked,.rarity,.checkAll)").each(function() {
         tohide.push($(this).closest("label").attr("class").replace('background-icon', '').trim());
@@ -343,8 +352,8 @@ function filterEmptySlotIfNeeded(targetElement) {
 
 function itemfilter() {
     filterEmptySlotIfNeeded(this);
-    var levimin = ($("#levimin").val() == "") ? 0 : parseInt($("#levimin").val());
-    var levimax = ($("#levimax").val() == "") ? 80 : parseInt($("#levimax").val());
+    var levimin = ($("#levimin").val() === "") ? 0 : parseInt($("#levimin").val());
+    var levimax = ($("#levimax").val() === "") ? 80 : parseInt($("#levimax").val());
     var filtervalue = $(selectors.searchFilter).val().toLowerCase();
     var toshow = [];
     $("#items .filter-item :checked").each(function() {
@@ -370,15 +379,17 @@ function reload() {
     $(selectors.searchFilter).val("");
     $(".levfilter").val("");
     $("input:checkbox").prop("checked", true);
+    elements.accounts = {};
     $.each(guids, function(j, key) {
         var url = get_url("account", key);
         $.getJSON(url, function(data) {
-            var account = data.name.replace(".", "·");
-            $("#content").append($("<div/>").addClass(account + " account"));
-            $("." + account).append($("<h2/>").text(account).attr("title", "Créé le " + formatDate(data.created)));
+            var account = data.name.replace(".", "   ·   ");
+            var $account = elements.accounts[account] = $("<div/>").addClass("account");
+            $("#content").append($account);
+            $account.append($("<h2/>").text(account).attr("title", "Créé le " + formatDate(data.created)));
             var wurl = get_url("worlds/" + data.world, key);
             $.getJSON(wurl, function(wdata) {
-                $("." + account).append($("<h6/>").text(wdata.name));
+                $account.append($("<h6/>").text(wdata.name));
             });
             get_content(key, account);
         });
@@ -405,7 +416,7 @@ function initEvents() {
     });
 
     $('ul.tabs li').click(function() {
-        var tab_id = $(this).attr('toshow');
+        var tab_id = $(this).data('content');
 
         $('ul.tabs li').removeClass('current');
         $('.tab-content').removeClass('current');
